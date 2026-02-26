@@ -1,0 +1,9 @@
+node_modules/
+instances/
+data/instances.json
+.env
+.env.local
+.DS_Store
+Thumbs.db
+*.log
+ansible/.vault/

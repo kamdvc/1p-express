@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1p-express | Manager de Instancias</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>1p-express</h1>
+      <p class="subtitle">CRUD Express + MySQL con instancias dinámicas en Docker</p>
+
+      <section class="card">
+        <h2>Nueva instancia</h2>
+        <form id="create-instance-form">
+          <label for="instance-name">Nombre cliente</label>
+          <input id="instance-name" name="name" placeholder="ejemplo: cunori-a" required />
+          <button type="submit">Crear instancia</button>
+        </form>
+        <p id="instance-status"></p>
+      </section>
+
+      <section class="card">
+        <h2>Instancias</h2>
+        <button id="refresh-instances" type="button">Actualizar lista</button>
+        <ul id="instances-list"></ul>
+      </section>
+
+      <section class="card">
+        <h2>CRUD productos</h2>
+        <p id="selected-instance">No hay instancia seleccionada.</p>
+        <p id="product-status"></p>
+        <form id="product-form">
+          <input id="product-name" placeholder="Nombre producto" required />
+          <input id="product-price" type="number" step="0.01" placeholder="Precio" required />
+          <button type="submit">Crear producto</button>
+        </form>
+        <button id="refresh-products" type="button">Cargar productos</button>
+        <ul id="products-list"></ul>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

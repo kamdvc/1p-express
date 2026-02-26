@@ -1,0 +1,32 @@
+{
+  "name": "1p-express",
+  "version": "1.0.0",
+  "description": "CRUD multi-instancia con Express, MySQL, Docker, Jenkins y Ansible",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "build:image": "docker build -t 1p-express-app:latest .",
+    "build:manager-image": "docker build -t 1p-express-manager:latest --build-arg APP_MODE=manager .",
+    "build:image:wsl": "wsl docker build -t 1p-express-app:latest .",
+    "build:manager-image:wsl": "wsl docker build -t 1p-express-manager:latest --build-arg APP_MODE=manager ."
+  },
+  "keywords": [
+    "express",
+    "mysql",
+    "docker",
+    "jenkins",
+    "ansible"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "mysql2": "^3.15.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

@@ -1,0 +1,5 @@
+node_modules
+npm-debug.log
+data/instances.json
+instances
+ansible/.vault

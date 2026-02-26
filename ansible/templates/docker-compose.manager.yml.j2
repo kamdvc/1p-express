@@ -1,0 +1,14 @@
+services:
+  manager:
+    image: 1p-express-manager:latest
+    container_name: 1p-express-manager
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      APP_MODE: manager
+      PORT: 3000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - {{ app_root }}/data:/app/data
+      - {{ app_root }}/instances:/app/instances

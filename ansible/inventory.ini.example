@@ -1,0 +1,2 @@
+[app_servers]
+demo ansible_host=192.168.1.2 ansible_user=student ansible_ssh_private_key_file=~/ssh_ansible_cunori
