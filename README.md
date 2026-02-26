@@ -133,6 +133,7 @@ Levantar Jenkins local con Docker:
 
 Archivo base:
 - `jenkins/docker-compose.yml`
+- `jenkins/SETUP.md` (pasos UI para credenciales y pipeline)
 
 Si Jenkins corre dentro de contenedor, ese contenedor debe tener acceso a Docker:
 - Opción simple: montar `-v /var/run/docker.sock:/var/run/docker.sock`
