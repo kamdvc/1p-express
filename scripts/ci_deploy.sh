@@ -4,12 +4,34 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
+INVENTORY_FILE="${INVENTORY_FILE:-ansible/inventory.ini}"
+get_inventory_var() {
+  local key="$1"
+  awk -v key="$key" '
+    NF && $1 !~ /^#/ && $1 !~ /^\[/ {
+      for (i = 1; i <= NF; i++) {
+        if ($i ~ ("^" key "=")) {
+          split($i, parts, "=")
+          print parts[2]
+          exit
+        }
+      }
+    }
+  ' "$INVENTORY_FILE"
+}
+
+TARGET_HOST="${TARGET_HOST:-$(get_inventory_var "ansible_host")}"
+TARGET_PORT="${TARGET_PORT:-$(get_inventory_var "ansible_port")}"
+TARGET_USER="${TARGET_USER:-$(get_inventory_var "ansible_user")}"
+
 TARGET_HOST="${TARGET_HOST:-192.168.0.109}"
 TARGET_PORT="${TARGET_PORT:-2222}"
 TARGET_USER="${TARGET_USER:-user}"
 SSH_KEY_PATH="${SSH_KEY_PATH:-$HOME/.ssh/id_ed25519}"
 SUDO_PASSWORD="${SUDO_PASSWORD:-}"
 INSTALL_DOCKER="${INSTALL_DOCKER:-false}"
+
+export TARGET_HOST TARGET_PORT TARGET_USER SSH_KEY_PATH INSTALL_DOCKER
 
 if [[ -z "$SUDO_PASSWORD" ]]; then
   echo "[ci] ERROR: Define SUDO_PASSWORD como variable de entorno en Jenkins."

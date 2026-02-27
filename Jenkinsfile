@@ -3,7 +3,6 @@ pipeline {
 
   environment {
     ANSIBLE_HOST_KEY_CHECKING = "False"
-    TARGET_HOST = "192.168.0.109"
     TARGET_PORT = "2222"
     TARGET_USER = "user"
   }
