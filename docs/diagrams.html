@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1p-express - Diagramas</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        color: #1d1d1d;
+      }
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        padding: 16px;
+        margin-bottom: 18px;
+      }
+      h1,
+      h2 {
+        margin-top: 0;
+      }
+      .source {
+        background: #101820;
+        color: #dbe7f3;
+        border-radius: 8px;
+        padding: 12px;
+        overflow: auto;
+        white-space: pre;
+        font-family: Consolas, monospace;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+      .note {
+        color: #4b5563;
+        font-size: 14px;
+      }
+    </style>
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({
+        startOnLoad: true,
+        securityLevel: "loose"
+      });
+    </script>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Diagramas 1p-express</h1>
+      <p class="note">
+        Esta página contiene el diagrama de secuencia y el diagrama de estados completos para tu exposición.
+      </p>
+
+      <section class="card">
+        <h2>Diagrama de Secuencia (Completo)</h2>
+        <div class="mermaid">
+sequenceDiagram
+  autonumber
+  participant U as UsuarioWeb
+  participant M as ManagerApp_3000
+  participant P as PortAllocator
+  participant D as DockerManager
+  participant C as DockerCompose
+  participant T as TenantApp_410x
+  participant DB as MySQLTenant
+
+  U->>M: POST /api/instances {name}
+  M->>P: getNextPort(instances, 4100-5000)
+  P-->>M: nextPort
+  M->>D: createDockerInstance(instance)
+  D->>C: compose up -d
+  C-->>D: app + mysql started
+  D-->>M: ok
+  M-->>U: 201 instancia creada
+
+  U->>M: GET /api/instances
+  M-->>U: lista instancias
+
+  U->>T: GET /api/products
+  T->>DB: SELECT * FROM products
+  DB-->>T: rows
+  T-->>U: 200 rows
+
+  U->>T: POST /api/products
+  T->>DB: INSERT product
+  DB-->>T: insertId
+  T-->>U: 201 created
+
+  U->>M: DELETE /api/instances/{id}
+  M->>D: destroyDockerInstance(instance)
+  D->>C: compose down -v
+  C-->>D: stopped + volume removed
+  D-->>M: ok
+  M-->>U: 200 deleted
+        </div>
+        <h3>Fuente Mermaid</h3>
+        <div class="source">sequenceDiagram
+  autonumber
+  participant U as UsuarioWeb
+  participant M as ManagerApp_3000
+  participant P as PortAllocator
+  participant D as DockerManager
+  participant C as DockerCompose
+  participant T as TenantApp_410x
+  participant DB as MySQLTenant
+
+  U-&gt;&gt;M: POST /api/instances {name}
+  M-&gt;&gt;P: getNextPort(instances, 4100-5000)
+  P--&gt;&gt;M: nextPort
+  M-&gt;&gt;D: createDockerInstance(instance)
+  D-&gt;&gt;C: compose up -d
+  C--&gt;&gt;D: app + mysql started
+  D--&gt;&gt;M: ok
+  M--&gt;&gt;U: 201 instancia creada
+
+  U-&gt;&gt;M: GET /api/instances
+  M--&gt;&gt;U: lista instancias
+
+  U-&gt;&gt;T: GET /api/products
+  T-&gt;&gt;DB: SELECT * FROM products
+  DB--&gt;&gt;T: rows
+  T--&gt;&gt;U: 200 rows
+
+  U-&gt;&gt;T: POST /api/products
+  T-&gt;&gt;DB: INSERT product
+  DB--&gt;&gt;T: insertId
+  T--&gt;&gt;U: 201 created
+
+  U-&gt;&gt;M: DELETE /api/instances/{id}
+  M-&gt;&gt;D: destroyDockerInstance(instance)
+  D-&gt;&gt;C: compose down -v
+  C--&gt;&gt;D: stopped + volume removed
+  D--&gt;&gt;M: ok
+  M--&gt;&gt;U: 200 deleted</div>
+      </section>
+
+      <section class="card">
+        <h2>Diagrama de Estados (Completo)</h2>
+        <div class="mermaid">
+stateDiagram-v2
+  [*] --> NoCreada
+
+  NoCreada --> Creando: POST /api/instances
+  Creando --> Activa: compose_up_ok
+  Creando --> ErrorCreacion: compose_up_fail
+
+  Activa --> Eliminando: DELETE /api/instances/{id}
+  Eliminando --> Eliminada: compose_down_ok
+  Eliminando --> ErrorEliminacion: compose_down_fail
+
+  ErrorCreacion --> Creando: reintentar_creacion
+  ErrorEliminacion --> Eliminando: reintentar_eliminacion
+
+  Eliminada --> [*]
+        </div>
+        <h3>Fuente Mermaid</h3>
+        <div class="source">stateDiagram-v2
+  [*] --&gt; NoCreada
+
+  NoCreada --&gt; Creando: POST /api/instances
+  Creando --&gt; Activa: compose_up_ok
+  Creando --&gt; ErrorCreacion: compose_up_fail
+
+  Activa --&gt; Eliminando: DELETE /api/instances/{id}
+  Eliminando --&gt; Eliminada: compose_down_ok
+  Eliminando --&gt; ErrorEliminacion: compose_down_fail
+
+  ErrorCreacion --&gt; Creando: reintentar_creacion
+  ErrorEliminacion --&gt; Eliminando: reintentar_eliminacion
+
+  Eliminada --&gt; [*]</div>
+      </section>
+    </main>
+  </body>
+</html>
