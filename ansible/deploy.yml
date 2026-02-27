@@ -4,6 +4,8 @@
   become: true
   vars:
     app_root: /opt/1p-express
+    app_repo_url: https://github.com/kamdvc/1p-express.git
+    app_repo_branch: main
     install_docker: false
     docker_packages:
       - docker.io
@@ -64,11 +66,18 @@
         state: directory
         mode: "0755"
 
-    - name: Copiar proyecto al servidor
-      ansible.builtin.copy:
-        src: "../"
+    - name: Asegurar git instalado en servidor
+      ansible.builtin.apt:
+        name: git
+        state: present
+        update_cache: false
+
+    - name: Obtener código desde GitHub (rápido y reproducible)
+      ansible.builtin.git:
+        repo: "{{ app_repo_url }}"
         dest: "{{ app_root }}"
-        mode: "0755"
+        version: "{{ app_repo_branch }}"
+        force: true
 
     - name: Construir imágenes Docker en servidor remoto
       ansible.builtin.command:

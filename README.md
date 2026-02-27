@@ -167,6 +167,10 @@ Si el servidor no tiene daemon Docker activo, puedes forzar instalación de Dock
 INSTALL_DOCKER=true ./scripts/deploy.sh
 ```
 
+Nota de rendimiento:
+- El playbook ya no copia toda la carpeta local (evita bloqueos por `.venv`/`node_modules`).
+- Ahora hace `git pull/clone` directo en el servidor (`/opt/1p-express`), mucho más rápido.
+
 ---
 
 ## Conexión SSH (tu caso de clase)
