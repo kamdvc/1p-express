@@ -171,6 +171,21 @@ Nota de rendimiento:
 - El playbook ya no copia toda la carpeta local (evita bloqueos por `.venv`/`node_modules`).
 - Ahora hace `git pull/clone` directo en el servidor (`/opt/1p-express`), mucho más rápido.
 
+## Puertos dinámicos desde otra laptop (WSL servidor)
+
+Si accedes a la app desde otra laptop usando la IP de Windows (`192.168.x.x`), necesitas reenviar los puertos de instancias (`4100+`) desde Windows hacia WSL.
+
+Ejemplo para abrir rango `4100-4120` (PowerShell como administrador en Laptop 2):
+
+```powershell
+$wslIp = (wsl hostname -I).Trim().Split(' ')[0]
+4100..4120 | ForEach-Object {
+  netsh interface portproxy delete v4tov4 listenaddress=0.0.0.0 listenport=$_ | Out-Null
+  netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=$_ connectaddress=$wslIp connectport=$_
+}
+netsh advfirewall firewall add rule name="WSL tenants 4100-4120" dir=in action=allow protocol=TCP localport=4100-4120
+```
+
 ---
 
 ## Conexión SSH (tu caso de clase)
