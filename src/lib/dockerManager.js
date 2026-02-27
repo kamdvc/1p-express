@@ -10,6 +10,13 @@ function runCompose(composeArgs) {
     execSync(`${DOCKER_BIN} compose ${composeArgs}`, { stdio: "inherit" });
     return;
   } catch (error) {
+    try {
+      execSync(`docker-compose ${composeArgs}`, { stdio: "inherit" });
+      return;
+    } catch (_composeV1Error) {
+      // continue with Windows fallback below
+    }
+
     // Si Node corre en Windows, intentamos automáticamente por WSL.
     if (process.platform === "win32") {
       execSync(`wsl docker compose ${composeArgs}`, { stdio: "inherit" });
